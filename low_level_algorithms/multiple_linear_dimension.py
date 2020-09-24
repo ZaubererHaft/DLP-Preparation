@@ -1,8 +1,17 @@
 import matplotlib.pyplot as plt
 import csv
 
+def complexity(weights, regularization_rate):
+    n = len(weights)
 
-def cost_function(samples, features, weights, bias):
+    sum = 0
+    for i in range(n):
+        sum += weights[i]**2
+    
+    return regularization_rate * sum
+
+
+def cost_function(samples, features, weights, bias, regularization_rate):
     m = len(samples)
     n = len(weights)
 
@@ -16,9 +25,12 @@ def cost_function(samples, features, weights, bias):
 
         total_error += (samples[i] - sum)**2
 
-    return total_error / m
+    mse_error = total_error / m 
+    
+    #we want to minimze the mse error and the complexity of the model
+    return mse_error + complexity(weights, regularization_rate)
 
-def gradient(samples, features, weights, bias):
+def cost_gradient(samples, features, weights, bias, regularization_rate):
     m = len(samples)
     n = len(weights)
 
@@ -32,16 +44,19 @@ def gradient(samples, features, weights, bias):
         #for each sample
         for j in range(m):
 
-            #inner sum
+            #inner sum of derivative (chain rule)
             sum = 0
             for k in range(n):
                 sum += weights[k] * features[k][j]
             sum += bias
 
-            weight_i_deriv += -2*features[i][j] * (samples[j] - sum)
+            weight_i_deriv += -2*features[i][j] * (samples[j] - sum) 
             bias_deriv += -2*(samples[j] - sum)
 
-        gradients[i] = weight_i_deriv / m
+        gradients[i] = weight_i_deriv / m 
+
+        #derivative of regularization rate: r*(w_1^2 * ... * w_n^2) = r*2*w_i
+        gradients[i] += (regularization_rate * 2 * weights[i])
 
     return gradients, (bias_deriv / m)
 
@@ -53,16 +68,16 @@ def descent(gradients, grad_bias, weights, bias, learning_rate):
     return weights, bias
 
 
-def train(samples, features, weights, bias, learning_rate, iters):
+def train(samples, features, weights, bias, learning_rate, regularization_rate, iters):
 
     for i in range(iters):
-        gradients, grad_bias = gradient(samples, features, weights, bias)
+        gradients, grad_bias = cost_gradient(samples, features, weights, bias, regularization_rate)
         weights, bias = descent(gradients, grad_bias, weights, bias, learning_rate)
 
-        cost = cost_function(samples, features, weights, bias)
+        cost = cost_function(samples, features, weights, bias, 0)
 
         # Log Progress
-        if i % 500 == 0:
+        if i % 10 == 0:
             print (f"iter={i}    weights={weights}    bias={bias}    cost={cost}")
 
 
@@ -75,7 +90,7 @@ def train(samples, features, weights, bias, learning_rate, iters):
 #     for row in spamreader:
 #         print (', '.join(row))
 
-train([100,200,300],[[30,40,10],[20,40,100]],[0,0],0,0.0001,500000)
-#train([3,4,2,4,5],[[1,2,3,4,5]],[0],0,0.02,50)
+#train([100,200,300],[[30,40,10],[20,40,100]],[0,0],0,0.0001,500000)
+train([3,4,2,4,5], [[1,2,3,4,5]], [0], 0, 0.02, 0, 5001)
 
 #print(cost_function([3,4,2,4,5],[[1,2,3,4,5]],[0],0))

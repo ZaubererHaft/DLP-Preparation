@@ -45,7 +45,7 @@ def train(radio, sales, weight, bias, learning_rate, iters):
 
     return pd.DataFrame(data=cost_history, columns=['iteration','cost'])
 
-ds = train ([1,2,3,4,5], [3,4,2,4,5], 0, 0, 0.02, 50)
+ds = train ([1,2,3,4,5], [3,4,2,4,5], 0, 0, 0.02, 51)
 
 #plot dataset
 plt.figure()
