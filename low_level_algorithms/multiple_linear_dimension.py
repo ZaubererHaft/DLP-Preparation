@@ -90,7 +90,7 @@ def train(samples, features, weights, bias, learning_rate, regularization_rate, 
 #     for row in spamreader:
 #         print (', '.join(row))
 
-#train([100,200,300],[[30,40,10],[20,40,100]],[0,0],0,0.0001,500000)
-train([3,4,2,4,5], [[1,2,3,4,5]], [0], 0, 0.02, 0, 5001)
+train([100,200,300],[[30,40,10],[20,40,100]],[0,0],0,0.0002,0.1,300001)
+#train([3,4,2,4,5], [[1,2,3,4,5]], [0], 0, 0.02, 0, 5001)
 
 #print(cost_function([3,4,2,4,5],[[1,2,3,4,5]],[0],0))
