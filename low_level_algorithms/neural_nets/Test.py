@@ -2,19 +2,23 @@ import math
 import Neuron as nn
 
 
-i1 = nn.Neuron("i1",[],[1], nn.id)
-i2 = nn.Neuron("i2",[],[1], nn.id)
+i1 = nn.create_input_neuron("i1")
+i2 = nn.create_input_neuron("i2")
 
-h1 = nn.Neuron("h1",[i1, i2],[0.15,0.25], nn.sigmoid, 0.35)
-h2 = nn.Neuron("h2",[i1, i2],[0.2,0.3], nn.sigmoid, 0.35)
+h1 = nn.Neuron("h1",[i1, i2],[0.15, 0.2], nn.sigmoid, 0.35)
+h2 = nn.Neuron("h2",[i1, i2],[0.25, 0.3], nn.sigmoid, 0.35)
 
-print(h1.forward_propagation([0.05,0.10]))
+o1 = nn.Neuron("o1",[h1, h2],[0.40, 0.45], nn.sigmoid, 0.60)
+o2 = nn.Neuron("o2",[h1, h2],[0.50, 0.55], nn.sigmoid, 0.60)
 
-#input = nn.Neuron("X", [], [1], nn.id)
-#hidden = nn.Neuron("H", [input], [1])
-#out = nn.Neuron("O", [hidden], [1])
+#print(h1.forward_propagation([0.05, 0.10]))
+#print(h2.forward_propagation([0.05, 0.10]))
 
-#print(input.predict([0.75]))
-#print(hidden.predict([0.75]))
+out_o1 = o1.forward_propagation([0.05, 0.10])
+out_o2 = o2.forward_propagation([0.05, 0.10])
 
-#print(out.forward_propagation([0.75]))
+print(out_o1)
+print(out_o2)
+
+print(nn.error(out_o1, 0.01))
+print(nn.error(out_o2, 0.99))
