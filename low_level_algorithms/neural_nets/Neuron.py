@@ -1,22 +1,5 @@
 import math
-
-def sigmoid(x):
-    """
-    Sigmoid function returning a value between 0 and 1
-    """
-    return 1 / (1 + math.exp(-x))
-
-def relu(z):
-    """
-    Rectified Linear Unit
-    """
-    return max(0,z)
-
-def id(x):
-    """
-    Identity function returning the identity of an object
-    """
-    return x
+import Activator as ac
 
 def create_input_neuron(name):
     """
@@ -26,7 +9,7 @@ def create_input_neuron(name):
     Returns:
             Neuron that serves as input neuron
     """
-    return Neuron(name, [], [1], id)
+    return Neuron(name, [], [1], ac.Identity())
 
 def error(prediction, labeled_output):
     """
@@ -35,15 +18,15 @@ def error(prediction, labeled_output):
     return 0.5 * (prediction - labeled_output)**2
 
 class Neuron:
-    activation_function = None
+    activatior = None
     input_neurons = None   
     name = None
     weights = None
     bias = None
 
-    def __init__(self, name, input_neurons, weights, activation_function = relu, bias = 0):
+    def __init__(self, name, input_neurons, weights, activatior = ac.ReLu, bias = 0):
         self.name = name
-        self.activation_function = activation_function
+        self.activatior = activatior
         self.input_neurons = input_neurons
         self.weights = weights
         self.bias = bias
@@ -56,7 +39,7 @@ class Neuron:
             sum += features[i] * self.weights[i]
         sum += self.bias
         
-        return self.activation_function(sum)
+        return self.activatior.function(sum)
 
     def forward_propagation(self, features):
         inputs = []
@@ -80,5 +63,3 @@ class Neuron:
 
     def current_error(self, features):
         return 0
-
-

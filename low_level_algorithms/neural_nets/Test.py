@@ -1,15 +1,16 @@
 import math
 import Neuron as nn
+import Activator as ac
 
 
 i1 = nn.create_input_neuron("i1")
 i2 = nn.create_input_neuron("i2")
 
-h1 = nn.Neuron("h1",[i1, i2],[0.15, 0.2], nn.sigmoid, 0.35)
-h2 = nn.Neuron("h2",[i1, i2],[0.25, 0.3], nn.sigmoid, 0.35)
+h1 = nn.Neuron("h1",[i1, i2],[0.15, 0.2], ac.Sigmoid(), 0.35)
+h2 = nn.Neuron("h2",[i1, i2],[0.25, 0.3], ac.Sigmoid(), 0.35)
 
-o1 = nn.Neuron("o1",[h1, h2],[0.40, 0.45], nn.sigmoid, 0.60)
-o2 = nn.Neuron("o2",[h1, h2],[0.50, 0.55], nn.sigmoid, 0.60)
+o1 = nn.Neuron("o1",[h1, h2],[0.40, 0.45], ac.Sigmoid(), 0.60)
+o2 = nn.Neuron("o2",[h1, h2],[0.50, 0.55], ac.Sigmoid(), 0.60)
 
 #print(h1.forward_propagation([0.05, 0.10]))
 #print(h2.forward_propagation([0.05, 0.10]))
