@@ -78,4 +78,7 @@ class Neuron:
 
         return self.predict(inputs)
 
+    def current_error(self, features):
+        return 0
+
 
