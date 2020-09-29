@@ -18,7 +18,8 @@ def error(prediction, labeled_output):
     return 0.5 * (prediction - labeled_output)**2
 
 class Neuron:
-    activatior = None
+    #activator sigma
+    activator = None
     input_neurons = None   
     name = None
     weights = None
@@ -26,20 +27,24 @@ class Neuron:
 
     def __init__(self, name, input_neurons, weights, activatior = ac.ReLu, bias = 0):
         self.name = name
-        self.activatior = activatior
+        self.activator = activatior
         self.input_neurons = input_neurons
         self.weights = weights
         self.bias = bias
 
-    def predict(self, features):
+    #activation value a
+    def activation(self, features):
         assert len(self.weights) == len(features)
+        sum = self.sum_weights_bias(features)
+        return self.activator.function(sum)
 
+    #sum of weights and biases z
+    def sum_weights_bias(self, features):
         sum = 0
         for i in range(len(self.weights)):
             sum += features[i] * self.weights[i]
         sum += self.bias
-        
-        return self.activatior.function(sum)
+        return sum
 
     def forward_propagation(self, features):
         inputs = []
@@ -57,9 +62,6 @@ class Neuron:
             inputs.append(prop)
             
         if len(inputs) <= 0:
-            return self.predict(features)
+            return self.activation(features)
 
-        return self.predict(inputs)
-
-    def current_error(self, features):
-        return 0
+        return self.activation(inputs)
