@@ -4,6 +4,8 @@ import Activator as ac
 class Layer:
     activator = None
     neurons = None
+    next_layer = None
+    previous_layer = None
 
     def __init__(self, activator = ac.ReLu()):
         self.activator = activator
@@ -26,19 +28,59 @@ class Layer:
 
             assert len(target_neuron.input_neurons) == len (target_neuron.weights)
 
+        layer.previous_layer = self
+        self.next_layer = layer
+
     def forward_propagation(self, features):
         result = []
-
         for i in range(len(self.neurons)):
             result.append(self.neurons[i].forward_propagation(features))
 
         return result
 
-    def cost(self, features, labels):
+    def total_error(self, features, labels):
         sum = 0
+        for i in range(len(self.neurons)):
+            sum += self.neurons[i].error(features, labels[i])
 
-        for j in range(len(self.neurons)):
-            neuron = self.neurons[j]
+        return sum     
 
-            deriv_1 = 2 * (neuron.activation(features) - labels[j])
-            deriv_2 = self.activator.derivative()
+
+    def gradient(self, labels):
+        """
+        we are layer l
+        """
+        result = []
+
+        for j in range(len(self.previous_layer.neurons)):
+            sum = 0
+
+            for i in range(len(self.neurons)):
+                neuron = self.neurons[i]
+
+                deriv_1 = neuron.activation_value - labels[i]
+                deriv_2 = neuron.activator.derivative(neuron.sum_weights_bias_value)
+                deriv_3 = self.previous_layer.neurons[j].activation_value
+
+                deriv = deriv_1 * deriv_2 * deriv_3
+
+                neuron.descent_weight(deriv, i)                
+
+            result.append(sum)
+
+            #sum *= self.previous_layer.back_propagate(neuron.weights[j])
+
+        return result
+
+    def back_propagate(self, weight):
+        sum = weight
+
+        for i in range(len(self.neurons)):
+            neuron = self.neurons[i]
+            sum *= neuron.activator.derivative(neuron.sum_weights_bias_value)
+
+            if self.previous_layer != None:
+                sum *= self.previous_layer.neurons[i].activation_value
+                sum *= self.previous_layer.back_propagate(neuron.weights[i])
+
+        return sum
