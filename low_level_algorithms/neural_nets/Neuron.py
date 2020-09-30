@@ -77,8 +77,8 @@ class Neuron:
     def descent_weight(self, weight, weight_index):
         self.weights[weight_index] -= self.learning_rate * weight
 
-    def back_propagate(self, last_derivation_result, weight):
-        return 0
+    def descent_bias(self, bias): 
+        self.bias -= self.learning_rate * bias
 
     def error(self, features, labeled_output):
         prediction = self.forward_propagation(features)

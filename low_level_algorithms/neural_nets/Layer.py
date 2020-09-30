@@ -47,40 +47,26 @@ class Layer:
 
 
     def gradient(self, labels):
-        """
-        we are layer l
-        """
-        result = []
-
-        for j in range(len(self.previous_layer.neurons)):
-            sum = 0
-
-            for i in range(len(self.neurons)):
-                neuron = self.neurons[i]
-
-                deriv_1 = neuron.activation_value - labels[i]
-                deriv_2 = neuron.activator.derivative(neuron.sum_weights_bias_value)
-                deriv_3 = self.previous_layer.neurons[j].activation_value
-
-                deriv = deriv_1 * deriv_2 * deriv_3
-
-                neuron.descent_weight(deriv, i)                
-
-            result.append(sum)
-
-            #sum *= self.previous_layer.back_propagate(neuron.weights[j])
-
-        return result
-
-    def back_propagate(self, weight):
-        sum = weight
-
+        gradient = []
+        
         for i in range(len(self.neurons)):
             neuron = self.neurons[i]
-            sum *= neuron.activator.derivative(neuron.sum_weights_bias_value)
 
-            if self.previous_layer != None:
-                sum *= self.previous_layer.neurons[i].activation_value
-                sum *= self.previous_layer.back_propagate(neuron.weights[i])
+            deriv_1 = neuron.activation_value - labels[i]
+            deriv_2 = neuron.activator.derivative(neuron.sum_weights_bias_value)
 
-        return sum
+            for j in range(len(neuron.input_neurons)):
+                deriv_3 = self.previous_layer.neurons[j].activation_value
+                deriv = deriv_1 * deriv_2 * deriv_3
+                #neuron.descent_weight(deriv, j) 
+                gradient.append(deriv)
+
+            bias_deriv = deriv_1 * deriv_2
+            neuron.descent_bias(bias_deriv)
+
+        self.previous_layer.back_propagate(gradient)
+
+
+    def back_propagate(self, values):
+        #todo: implement
+        return

@@ -75,5 +75,6 @@ print(hidden.neurons[1].activation_value)
 
 print("-------------------backward propagation values---------------------------")
 
+
 print(output.gradient([0.1,0.05]))
 #print(output.gradient([2,3],[1]))
