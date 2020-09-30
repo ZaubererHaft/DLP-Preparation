@@ -74,11 +74,11 @@ class Neuron:
 
         return self.__activation(inputs)
 
-    def descent_weight(self, weight, weight_index):
-        self.weights[weight_index] -= self.learning_rate * weight
+    def descent(self, gradient):
+        for i in range(len(self.weights)):
+            self.weights[i] -= self.learning_rate * gradient.pop(0)
 
-    def descent_bias(self, bias): 
-        self.bias -= self.learning_rate * bias
+        #self.bias -= self.learning_rate * bias
 
     def error(self, features, labeled_output):
         prediction = self.forward_propagation(features)

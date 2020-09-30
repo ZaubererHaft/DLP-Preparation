@@ -63,18 +63,39 @@ output.add_neuron("o2", 0.5)
 input.connect_layer(hidden, [[0.1,0.3,0.5], [0.2,0.4,0.6]])
 hidden.connect_layer(output, [[0.7,0.9], [0.8,0.1]])
 
+print("-------------------forward propagation values---------------------------")
 output.forward_propagation([1,4,5])
 
-#forward control
-print("-------------------forward propagation values---------------------------")
 print(output.neurons[0].activation_value)
 print(output.neurons[1].activation_value)
 
 print(hidden.neurons[0].activation_value)
 print(hidden.neurons[1].activation_value)
 
+print(f"total error: {output.total_error([1,4,5],[0.1,0.05])}")
+
 print("-------------------backward propagation values---------------------------")
+grad = output.gradient([0.1,0.05])
+print(grad)
+output.descent_all(grad)
+
+print(input.neurons[0].weights)
+print(input.neurons[1].weights)
+print(input.neurons[2].weights)
+
+print(hidden.neurons[0].weights)
+print(hidden.neurons[1].weights)
+
+print(output.neurons[0].weights)
+print(output.neurons[1].weights)
+
+print(f"total error: {output.total_error([1,4,5],[0.1,0.05])}")
+
+for i in range(10000):
+    output.forward_propagation([1,4,5])
+    grad = output.gradient([0.1,0.05])
+    output.descent_all(grad)
+    print(f"total error: {output.total_error([1,4,5],[0.1,0.05])}")
 
 
-print(output.gradient([0.1,0.05]))
 #print(output.gradient([2,3],[1]))

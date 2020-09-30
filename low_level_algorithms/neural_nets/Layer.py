@@ -48,25 +48,60 @@ class Layer:
 
     def gradient(self, labels):
         gradient = []
+        propagation = []
         
         for i in range(len(self.neurons)):
-            neuron = self.neurons[i]
+            neuron = self.neurons[i]    
 
             deriv_1 = neuron.activation_value - labels[i]
             deriv_2 = neuron.activator.derivative(neuron.sum_weights_bias_value)
 
             for j in range(len(neuron.input_neurons)):
                 deriv_3 = self.previous_layer.neurons[j].activation_value
-                deriv = deriv_1 * deriv_2 * deriv_3
-                #neuron.descent_weight(deriv, j) 
+                deriv = deriv_1 * deriv_2 * deriv_3 
                 gradient.append(deriv)
 
-            bias_deriv = deriv_1 * deriv_2
-            neuron.descent_bias(bias_deriv)
+            #bias_deriv = deriv_1 * deriv_2
+            propagation.append((deriv_1, deriv_2))
 
-        self.previous_layer.back_propagate(gradient)
+        back_prop = self.previous_layer.back_propagate(propagation)
+        gradient.extend(back_prop)
+        return gradient
 
 
-    def back_propagate(self, values):
-        #todo: implement
-        return
+    def back_propagate(self, prop):
+    
+        gradient = []
+        propagation = []
+
+        for i in range(len(self.neurons)):
+            neuron = self.neurons[i]
+
+            deriv_1 = 0
+            for j in range(len(prop)):
+                (d1,d2) = prop[j]
+                deriv_1 += d1 * d2 * self.next_layer.neurons[j].weights[i]
+
+            deriv_2 = neuron.activator.derivative(neuron.sum_weights_bias_value)
+
+            for k in range(len(neuron.input_neurons)):
+                deriv_3 = self.previous_layer.neurons[k].activation_value
+                deriv = deriv_1 * deriv_2 * deriv_3 
+                gradient.append(deriv)
+
+            propagation.append((deriv_1, deriv_2))
+
+        #another layer left
+        if self.previous_layer == None:
+            return gradient
+        else:
+            back_prop = self.previous_layer.back_propagate(propagation)
+            gradient.extend(back_prop)
+            return gradient
+
+    def descent_all(self, gradient):
+        for i in range(len(self.neurons)):
+            self.neurons[i].descent(gradient)
+        
+        if self.previous_layer != None and len(gradient) > 0:
+            self.previous_layer.descent_all(gradient)
