@@ -72,7 +72,6 @@ print(output.neurons[1].activation_value)
 print(hidden.neurons[0].activation_value)
 print(hidden.neurons[1].activation_value)
 
-print(f"total error: {output.total_error([1,4,5],[0.1,0.05])}")
 
 print("-------------------backward propagation values---------------------------")
 grad = output.gradient([0.1,0.05])
@@ -89,13 +88,18 @@ print(hidden.neurons[1].weights)
 print(output.neurons[0].weights)
 print(output.neurons[1].weights)
 
-print(f"total error: {output.total_error([1,4,5],[0.1,0.05])}")
-
+print(f"total error: {output.total_error([[1,4,5]],[[0.1,0.05]])}")
+"""
 for i in range(10000):
     output.forward_propagation([1,4,5])
     grad = output.gradient([0.1,0.05])
     output.descent_all(grad)
-    print(f"total error: {output.total_error([1,4,5],[0.1,0.05])}")
 
+print(f"total error: {output.total_error([[1,4,5]],[[0.1,0.05]])}")
 
 #print(output.gradient([2,3],[1]))
+"""
+print("-------------------------train--------------------------")
+print(f"total error: {output.total_error([[1,4,5],[6,3,2]],[[0.1,0.05],[0.3,0.05]])}")
+output.train([[1,4,5],[6,3,2]],[[0.1,0.05],[0.3,0.05]], 1000, 10)
+print(f"total error: {output.total_error([[1,4,5],[6,3,2]],[[0.1,0.05],[0.3,0.05]])}")

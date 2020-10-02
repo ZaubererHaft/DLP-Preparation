@@ -40,10 +40,12 @@ class Layer:
 
     def total_error(self, features, labels):
         sum = 0
-        for i in range(len(self.neurons)):
-            sum += self.neurons[i].error(features, labels[i])
 
-        return sum     
+        for k in range(len(features)):
+            for i in range(len(self.neurons)):
+                sum += self.neurons[i].error(features[k], labels[k][i])
+
+        return sum / len(features)    
 
 
     def gradient(self, labels):
@@ -105,3 +107,22 @@ class Layer:
         
         if self.previous_layer != None and len(gradient) > 0:
             self.previous_layer.descent_all(gradient)
+
+    def train(self, features, labels, iterations, grad_size):
+        for i in range(iterations):
+
+            grad = [0] * grad_size
+
+            for j in range(len(features)):
+                self.forward_propagation(features[j])
+
+                grad_res = self.gradient(labels[j])
+
+                for k in range(len(grad)):
+                    grad[k] += grad_res[k]
+
+            for k in range(len(grad)):
+                grad[k]/= len(features)
+            self.descent_all(grad)
+
+            #print(f"total error: {self.total_error([1,4,5],[0.1,0.05])}")
